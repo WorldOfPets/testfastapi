@@ -1,4 +1,5 @@
 migrations/versions/*
+!migrations/versions/.gitkeep
 env/
 __pycache__/
 db.sqlite3
