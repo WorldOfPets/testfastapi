@@ -1,13 +1,22 @@
 from typing import List
 from fastapi import FastAPI
+from fastapi_users import FastAPIUsers
+from auth.manager import get_user_manager
+from auth.schemas import UserCreate, UserRead
 from schemas import Trade, User
 from testdata import *
 from exec import CustomExec
+from auth.auth import auth_backend
 
 app = FastAPI(
     title="Trading App",
     version="0.1.1"
 )
+fastapi_users = FastAPIUsers[User, int](
+    get_user_manager,
+    [auth_backend],
+)
+
 CustomExec(app)
 
 
@@ -35,3 +44,14 @@ def change_user_name(user_id: int, new_name: str):
 def add_trades(trades: Trade):
     fake_trades.append(trades)
     return {"status":200, "data":fake_trades}
+
+app.include_router(
+    fastapi_users.get_auth_router(auth_backend),
+    prefix="/auth/jwt",
+    tags=["auth"],
+)
+app.include_router(
+    fastapi_users.get_register_router(UserRead, UserCreate),
+    prefix="/auth",
+    tags=["auth"],
+)
