@@ -2,7 +2,7 @@ from typing import List
 from fastapi import FastAPI
 from fastapi_users import FastAPIUsers
 from auth.manager import get_user_manager
-from auth.schemas import UserCreate, UserRead
+from auth.schemas import UserCreate, UserRead, RoleCreate
 from schemas import Trade, User
 from testdata import *
 from exec import CustomExec
@@ -44,6 +44,13 @@ def change_user_name(user_id: int, new_name: str):
 def add_trades(trades: Trade):
     fake_trades.append(trades)
     return {"status":200, "data":fake_trades}
+
+# @app.post("/role")
+# async def add_role(new_operation: RoleCreate, session: AsyncSession = Depends(get_async_session)):
+#     stmt = insert(operation).values(**new_operation.dict())
+#     await session.execute(stmt)
+#     await session.commit()
+#     return {"status": "success"}
 
 app.include_router(
     fastapi_users.get_auth_router(auth_backend),

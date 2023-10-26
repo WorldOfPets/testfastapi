@@ -2,8 +2,10 @@ from typing import Optional
 import uuid
 
 from fastapi_users import schemas
-from pydantic import EmailStr, ConfigDict
+from pydantic import EmailStr, ConfigDict, BaseModel
 from pydantic.version import VERSION as PYDANTIC_VERSION
+from sqlalchemy import JSON
+
 PYDANTIC_V2 = PYDANTIC_VERSION.startswith("2.")
 
 class UserRead(schemas.BaseUser[int]):
@@ -39,3 +41,7 @@ class UserUpdate(schemas.BaseUserUpdate):
     is_active: Optional[bool] = True
     is_superuser: Optional[bool] = False
     is_verified: Optional[bool] = False
+
+class RoleCreate(BaseModel):
+    name: str
+    permissions: JSON
