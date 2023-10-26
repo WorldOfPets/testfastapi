@@ -44,4 +44,4 @@ class UserUpdate(schemas.BaseUserUpdate):
 
 class RoleCreate(BaseModel):
     name: str
-    permissions: JSON
+    permissions: str
