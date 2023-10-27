@@ -21,6 +21,10 @@ class RoleCreate(BaseModel):
     name: str
     permissions: str
 
+class RoleUpdate(BaseModel):
+    name: str
+    permissions: str
+
 user = Table(
     "user",
     metadata, 
