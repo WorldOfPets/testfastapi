@@ -1,10 +1,10 @@
 from datetime import datetime
 from sqlalchemy import Boolean, Table, Column, Integer, String, TIMESTAMP, ForeignKey
 from .metadata import metadata
-from .role_models import role
+from .role_models import role, RoleRead
 from typing import Optional
 from fastapi_users import schemas
-from pydantic import EmailStr, ConfigDict
+from pydantic import BaseModel, EmailStr, ConfigDict, Field
 from pydantic.version import VERSION as PYDANTIC_VERSION
 
 PYDANTIC_V2 = PYDANTIC_VERSION.startswith("2.")
@@ -23,11 +23,18 @@ user = Table(
     Column("is_verified",Boolean, default=False, nullable=False),
 )
 
-
+class UserReadBaseModel(BaseModel):
+    id: int
+    email: EmailStr
+    role_id: int
+    is_active: bool
+    is_superuser: bool
+    is_verified: bool
 
 class UserRead(schemas.BaseUser[int]):
     id: int
     email: EmailStr
+    role_id: int
     is_active: bool = True
     is_superuser: bool = False
     is_verified: bool = False
@@ -43,7 +50,7 @@ class UserCreate(schemas.BaseUserCreate):
     username: str
     email: EmailStr
     password: str
-    role_id: int
+    role_id: int = Field(default=2)
     is_active: Optional[bool] = True
     is_superuser: Optional[bool] = False
     is_verified: Optional[bool] = False

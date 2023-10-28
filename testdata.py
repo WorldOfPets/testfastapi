@@ -1,14 +1,61 @@
-fake_users = [
-    {"id":1, "role":"admin", "name":"bob"},
-    {"id":2, "role":"user", "name":"evgen"},
-    {"id":3, "role":"user", "name":"ivan"},
-    {"id":4, "role":"user", "name":"ivan", "degree":[
-        {"id":1, "created_at":"2020-01-01T00:00:00", "type_degree":"expert"}
-    ]},
-]
+from datetime import datetime, timedelta
+from faker import Faker
+import random
 
-fake_trades = [
-    {"id":1, "user_id":1, "currency":"BTC", "side":"buy", "price":123, "amount":1.12},
-    {"id":2, "user_id":2, "currency":"BTC", "side":"sell", "price":321, "amount":2.42},
-    {"id":3, "user_id":3, "currency":"BTC", "side":"buy", "price":231, "amount":3.12},
-]
+import httpx
+
+faker = Faker("ru_RU")
+address = "http://127.0.0.1:8000"
+
+def create_role():
+    callback_url = address + "/roles/"
+    try:
+        roles = [
+            {"id":1, "name":"admin", "permissions":"all"},
+            {"id":2, "name":"user", "permissions":"read/write"},
+            {"id":3, "name":"unreg", "permissions":"none"}
+        ]
+        for item in roles:
+            result = httpx.post(callback_url, json=item)
+        print(result)
+    except Exception as ex:
+        print(f"Not error: {ex}")
+
+def create_user(user_count: int = 3):
+    callback_url = address + "/auth/auth/register"
+    try:
+        for _ in range(user_count):
+            result = httpx.post(callback_url, json={
+            "email": faker.email(),
+            "password": "string",
+            "is_active": True,
+            "is_superuser": False,
+            "is_verified": False,
+            "username": faker.name(),
+            "role_id": 2
+            })
+        print(result)
+    except Exception as ex:
+        print(f"Not error: {ex}")
+
+def create_task(task_count: int = 5, user_in_sys_count: int = 3):
+    callback_url = address + "/tasks/"
+    try:
+        for _ in range(task_count):
+            result = httpx.post(callback_url, json={
+                "name": faker.name(),
+                "description": faker.text(),
+                "createdAt": str(faker.date_time()),
+                "author": faker.random.randint(1, user_in_sys_count),
+                "executor": faker.random.randint(1, user_in_sys_count),
+                "deadline": str(datetime.now() + timedelta(days=7)),
+                "difficulty_level": random.uniform(0.0, 10.0),
+                "is_completed": False
+            })
+        print(result)
+    except Exception as ex:
+        print(f"Not error: {ex}")
+
+#create_role()
+#create_user()
+create_task()

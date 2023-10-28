@@ -12,7 +12,6 @@ from models import role
 DATABASE_URL = "sqlite+aiosqlite:///auth/db.sqlite3"
 Base: DeclarativeMeta = declarative_base()
 
-
 class User(SQLAlchemyBaseUserTable[int], Base):
     
     id = Column(Integer, primary_key=True)
