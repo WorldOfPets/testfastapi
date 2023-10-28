@@ -56,6 +56,9 @@ def create_task(task_count: int = 5, user_in_sys_count: int = 3):
     except Exception as ex:
         print(f"Not error: {ex}")
 
-#create_role()
-#create_user()
+#create 3 role
+create_role()
+#create 3 user
+create_user()
+#create 5 task
 create_task()

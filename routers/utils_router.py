@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 import httpx
 from auth import User
 from .auth_router import current_user
@@ -15,20 +15,21 @@ utils_router = APIRouter(
     tags=["Utils"]
 )
 
-@utils_router.get("/create-test-data")
-async def create_test_data(task_count: int = 20, user_count: int = 2, role_count: int = 3, session: AsyncSession = Depends(get_async_session)):
-    for _ in range(task_count):
-        new_task = TaskCreate(name=faker.name(), description=faker.text(), author=faker.random.randint(1, 2), executor=faker.random.randint(1, 2))
-        query_task = insert(task).values(dict(new_task))
-        await session.execute(query_task)
-        await session.commit()
-    return f"f"
+
+    
 
 @utils_router.get("/test-auth")
 def protected_route(user: User = Depends(current_user)):
-    return f"Hello, {user.username}"
+    try:    
+        return f"Hello, {user.username}"
+    except Exception as ex:
+            raise HTTPException(status_code=666, detail=ex)
 
 
 @utils_router.get("/test")
 def unprotected_route():
-    return f"Hello, anonym"
+    try:    
+        x = 10 / 0
+        return f"Hello, {x}"
+    except Exception as ex:
+        raise HTTPException(status_code=555, detail=str(ex))
