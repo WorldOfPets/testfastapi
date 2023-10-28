@@ -7,7 +7,7 @@ from sqlalchemy import TIMESTAMP, Boolean, Column, ForeignKey, Integer, String
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.ext.declarative import DeclarativeMeta, declarative_base
 from sqlalchemy.orm import sessionmaker
-from models.models import role
+from models import role
 
 DATABASE_URL = "sqlite+aiosqlite:///auth/db.sqlite3"
 Base: DeclarativeMeta = declarative_base()

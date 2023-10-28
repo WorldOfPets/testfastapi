@@ -1,8 +1,8 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends
 from sqlalchemy import select, insert, delete, update
 from sqlalchemy.ext.asyncio import AsyncSession
-from auth.database import get_async_session
-from models.models import role, RoleCreate, RoleRead, RoleUpdate
+from auth import get_async_session
+from models import role, RoleCreate, RoleRead, RoleUpdate
 from typing import List
 
 role_router = APIRouter(
