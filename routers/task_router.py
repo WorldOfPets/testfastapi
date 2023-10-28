@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends
 from sqlalchemy import select, insert, delete, update
 from sqlalchemy.ext.asyncio import AsyncSession
 from auth import get_async_session
-from models import task, TaskRead, TaskCreate
+from models import task, TaskRead, TaskCreate, TaskUpdate
 from typing import List
 
 task_router = APIRouter(
@@ -23,16 +23,23 @@ async def add_role(new_task:TaskCreate, session: AsyncSession = Depends(get_asyn
     await session.commit()
     return {"status":"created"}
 
-# @task_router.patch("/{role_id}")
-# async def update_role(role_id:int, update_role: RoleUpdate, session: AsyncSession = Depends(get_async_session)):
-#     query = update(role).where(role.c.id == role_id).values(name=update_role.name, permissions=update_role.permissions)
-#     result = await session.execute(query)
-#     await session.commit()
-#     return result.last_updated_params()
+@task_router.patch("/{task_id}")
+async def update_role(task_id:int, task_update: TaskUpdate, session: AsyncSession = Depends(get_async_session)):
+    query = update(task).where(task.c.id == task_id).values(
+        name=task_update.name, 
+        description=task_update.description,
+        executor=task_update.executor, 
+        deadline=task_update.deadline, 
+        difficulty_level=task_update.difficulty_level, 
+        is_completed=task_update.is_completed
+        )
+    result = await session.execute(query)
+    await session.commit()
+    return result.last_updated_params()
 
-# @task_router.delete("/{role_id}")
-# async def delete_role(role_id:int, session: AsyncSession = Depends(get_async_session)):
-#     query = delete(role).where(role.c.id == role_id)
-#     await session.execute(query)
-#     await session.commit()
-#     return {"status":"deleted"}
+@task_router.delete("/{task_id}")
+async def delete_role(task_id:int, session: AsyncSession = Depends(get_async_session)):
+    query = delete(task).where(task.c.id == task_id)
+    await session.execute(query)
+    await session.commit()
+    return {"status":"deleted"}
