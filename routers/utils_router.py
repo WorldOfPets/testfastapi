@@ -23,7 +23,7 @@ def protected_route(user: User = Depends(current_user)):
     try:    
         return f"Hello, {user.username}"
     except Exception as ex:
-            raise HTTPException(status_code=666, detail=ex)
+            raise HTTPException(status_code=555, detail=ex)
 
 
 @utils_router.get("/test")

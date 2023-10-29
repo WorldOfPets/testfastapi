@@ -57,4 +57,8 @@ class TaskCreate(BaseModel):
 
 class TaskUpdate(BaseModel):
     name: str
-    permissions: str
+    description: str
+    executor: int
+    deadline: datetime
+    difficulty_level: float
+    is_completed: bool
