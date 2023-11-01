@@ -26,7 +26,7 @@ PYDANTIC_V2 = PYDANTIC_VERSION.startswith("2.")
 class Task(Base):
     __tablename__ = "task"
 
-    id = Column(Integer, primary_key=True, autoincrement=True)
+    id = Column(Integer, primary_key=True, autoincrement=True, index=True)
     name = Column(String, nullable=False)
     description = Column(String)
     createdAt = Column(TIMESTAMP, default=datetime.now())
@@ -35,7 +35,7 @@ class Task(Base):
     deadline = Column(TIMESTAMP, nullable=True)
     difficulty_level = Column(Float, default=0.0)
     is_completed = Column(Boolean, default=False)
-
+    
     def as_dict(self):
        return {c.name: getattr(self, c.name) for c in self.__table__.columns}
 
@@ -50,13 +50,10 @@ class TaskRead(BaseModel):
     deadline: datetime
     difficulty_level: float
     is_completed: bool
-
-    if PYDANTIC_V2:  # pragma: no cover
-        model_config = ConfigDict(from_attributes=True)  # type: ignore
-    else:  # pragma: no cover
-        class Config:
-            orm_mode = True
     
+
+    
+
 class TaskCreate(BaseModel):
     id: int = Field(default_factory=lambda: uuid1().time_low)
     name: str

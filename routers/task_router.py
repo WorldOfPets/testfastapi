@@ -4,20 +4,20 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from auth import get_async_session
 from models import Task, TaskRead, TaskCreate, TaskUpdate
 from typing import List
-
 task_router = APIRouter(
     prefix="/tasks",
     tags=["Tasks"]
 )
 
-@task_router.get("/", response_model=List[TaskRead])
-async def get_all_roles(operation_type: str = "", session: AsyncSession = Depends(get_async_session)): 
-    query = select(Task)
-    result = await session.execute(query)
-    return result.all()
+@task_router.get("/", response_model=list[TaskRead])
+async def get_all_tasks(operation_type: str = "", session: AsyncSession = Depends(get_async_session)): 
+    res = await session.execute(select(Task).where(Task.id > 0))
+    return res.scalars()
+
+
     
 @task_router.post("/")
-async def add_role(new_task:TaskCreate, session: AsyncSession = Depends(get_async_session)):
+async def add_task(new_task:TaskCreate, session: AsyncSession = Depends(get_async_session)):
     query = insert(Task).values(**dict(new_task))
     await session.execute(query)
     await session.commit()

@@ -2,7 +2,7 @@ from datetime import datetime
 from sqlalchemy import Boolean, Table, Column, Integer, String, TIMESTAMP, ForeignKey
 from fastapi_users.db import SQLAlchemyBaseUserTable
 from .metadata import metadata, Base
-from .role_models import role, RoleRead
+from .role_models import Role, RoleRead
 from typing import Optional
 from fastapi_users import schemas
 from pydantic import BaseModel, EmailStr, ConfigDict, Field
@@ -19,7 +19,7 @@ class User(SQLAlchemyBaseUserTable[int], Base):
     email = Column(String, nullable=False)
     username = Column(String, nullable=False)
     registered_at = Column(TIMESTAMP, default=datetime.utcnow)
-    role_id = Column(Integer, ForeignKey(role.c.id))
+    role_id = Column(Integer, ForeignKey(Role.id))
     hashed_password: str = Column(String(length=1024), nullable=False)
     is_active: bool = Column(Boolean, default=True, nullable=False)
     is_superuser: bool = Column(Boolean, default=False, nullable=False)

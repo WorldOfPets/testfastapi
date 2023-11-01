@@ -5,7 +5,7 @@ from fastapi import Depends
 from fastapi_users.db import SQLAlchemyBaseUserTableUUID, SQLAlchemyBaseUserTable, SQLAlchemyUserDatabase
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.orm import sessionmaker
-from models import role, User
+from models import  User
 
 DATABASE_URL = "sqlite+aiosqlite:///auth/db.sqlite3"
 
