@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends
 from sqlalchemy import select, insert, delete, update
 from sqlalchemy.ext.asyncio import AsyncSession
 from auth import get_async_session
-from models import task, TaskRead, TaskCreate, TaskUpdate
+from models import Task, TaskRead, TaskCreate, TaskUpdate
 from typing import List
 
 task_router = APIRouter(
@@ -12,20 +12,20 @@ task_router = APIRouter(
 
 @task_router.get("/", response_model=List[TaskRead])
 async def get_all_roles(operation_type: str = "", session: AsyncSession = Depends(get_async_session)): 
-    query = select(task)
+    query = select(Task)
     result = await session.execute(query)
     return result.all()
     
 @task_router.post("/")
 async def add_role(new_task:TaskCreate, session: AsyncSession = Depends(get_async_session)):
-    query = insert(task).values(**dict(new_task))
+    query = insert(Task).values(**dict(new_task))
     await session.execute(query)
     await session.commit()
     return {"status":"created"}
 
 @task_router.patch("/{task_id}")
 async def update_role(task_id:int, task_update: TaskUpdate, session: AsyncSession = Depends(get_async_session)):
-    query = update(task).where(task.c.id == task_id).values(
+    query = update(Task).where(Task.id == task_id).values(
         name=task_update.name, 
         description=task_update.description,
         executor=task_update.executor, 
@@ -39,7 +39,7 @@ async def update_role(task_id:int, task_update: TaskUpdate, session: AsyncSessio
 
 @task_router.delete("/{task_id}")
 async def delete_role(task_id:int, session: AsyncSession = Depends(get_async_session)):
-    query = delete(task).where(task.c.id == task_id)
+    query = delete(Task).where(Task.id == task_id)
     await session.execute(query)
     await session.commit()
     return {"status":"deleted"}

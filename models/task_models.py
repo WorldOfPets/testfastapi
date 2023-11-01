@@ -4,27 +4,41 @@ from uuid import uuid1
 from sqlalchemy import JSON, Boolean, MetaData, Table, Column, Integer, String, TIMESTAMP, ForeignKey, Float
 from sqlalchemy.orm import relationship
 from pydantic import BaseModel, Field, ConfigDict
-from .metadata import metadata
-from .user_models import user, UserReadBaseModel, UserRead
+from .metadata import metadata, Base
+from .user_models import User, UserReadBaseModel, UserRead
 from pydantic.version import VERSION as PYDANTIC_VERSION
-from sqlalchemy.ext.declarative import declarative_base
-
 
 PYDANTIC_V2 = PYDANTIC_VERSION.startswith("2.")
 
-task = Table(
-    "task",
-    metadata, 
-    Column("id", Integer, primary_key=True, autoincrement=True),
-    Column("name", String, nullable=False),
-    Column("description", String),
-    Column("createdAt", TIMESTAMP, default=datetime.now()),
-    Column("author", Integer, ForeignKey(user.c.id)),
-    Column("executor", Integer, ForeignKey(user.c.id), nullable=True),
-    Column("deadline", TIMESTAMP, nullable=True),
-    Column("difficulty_level", Float, default=0.0),
-    Column("is_completed", Boolean, default=False)
-)
+# task = Table(
+#     "task",
+#     metadata, 
+#     Column("id", Integer, primary_key=True, autoincrement=True),
+#     Column("name", String, nullable=False),
+#     Column("description", String),
+#     Column("createdAt", TIMESTAMP, default=datetime.now()),
+#     Column("author", Integer, ForeignKey(user.c.id)),
+#     Column("executor", Integer, ForeignKey(user.c.id), nullable=True),
+#     Column("deadline", TIMESTAMP, nullable=True),
+#     Column("difficulty_level", Float, default=0.0),
+#     Column("is_completed", Boolean, default=False)
+# )
+class Task(Base):
+    __tablename__ = "task"
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    name = Column(String, nullable=False)
+    description = Column(String)
+    createdAt = Column(TIMESTAMP, default=datetime.now())
+    author = Column(Integer, ForeignKey(User.id))
+    executor = Column(Integer, ForeignKey(User.id), nullable=True)
+    deadline = Column(TIMESTAMP, nullable=True)
+    difficulty_level = Column(Float, default=0.0)
+    is_completed = Column(Boolean, default=False)
+
+    def as_dict(self):
+       return {c.name: getattr(self, c.name) for c in self.__table__.columns}
+
 
 class TaskRead(BaseModel):
     id: int

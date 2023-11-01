@@ -3,26 +3,11 @@ from typing import AsyncGenerator
 
 from fastapi import Depends
 from fastapi_users.db import SQLAlchemyBaseUserTableUUID, SQLAlchemyBaseUserTable, SQLAlchemyUserDatabase
-from sqlalchemy import TIMESTAMP, Boolean, Column, ForeignKey, Integer, String
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
-from sqlalchemy.ext.declarative import DeclarativeMeta, declarative_base
 from sqlalchemy.orm import sessionmaker
-from models import role
+from models import role, User
 
 DATABASE_URL = "sqlite+aiosqlite:///auth/db.sqlite3"
-Base: DeclarativeMeta = declarative_base()
-
-class User(SQLAlchemyBaseUserTable[int], Base):
-    
-    id = Column(Integer, primary_key=True)
-    email = Column(String, nullable=False)
-    username = Column(String, nullable=False)
-    registered_at = Column(TIMESTAMP, default=datetime.utcnow)
-    role_id = Column(Integer, ForeignKey(role.c.id))
-    hashed_password: str = Column(String(length=1024), nullable=False)
-    is_active: bool = Column(Boolean, default=True, nullable=False)
-    is_superuser: bool = Column(Boolean, default=False, nullable=False)
-    is_verified: bool = Column(Boolean, default=False, nullable=False)
 
 
 engine = create_async_engine(DATABASE_URL)

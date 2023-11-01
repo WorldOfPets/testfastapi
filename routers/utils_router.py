@@ -2,10 +2,6 @@ from fastapi import APIRouter, Depends, HTTPException
 import httpx
 from auth import User
 from .auth_router import current_user
-from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select, insert, delete, update
-from auth import get_async_session, get_user_manager
-from models import role, task, user, RoleCreate, TaskCreate
 from faker import Faker
 
 faker = Faker("ru_RU")
