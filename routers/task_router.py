@@ -2,8 +2,11 @@ from fastapi import APIRouter, Depends
 from sqlalchemy import select, insert, delete, update
 from sqlalchemy.ext.asyncio import AsyncSession
 from auth import get_async_session
-from models import Task, TaskRead, TaskCreate, TaskUpdate
+from models import Task, TaskRead, TaskCreate, TaskUpdate, User
 from typing import List
+from fastapi.encoders import jsonable_encoder
+from fastapi.responses import JSONResponse
+
 task_router = APIRouter(
     prefix="/tasks",
     tags=["Tasks"]
@@ -12,7 +15,21 @@ task_router = APIRouter(
 @task_router.get("/", response_model=list[TaskRead])
 async def get_all_tasks(operation_type: str = "", session: AsyncSession = Depends(get_async_session)): 
     res = await session.execute(select(Task).where(Task.id > 0))
-    return res.scalars()
+    data = []
+    for i in res.scalars():
+        dict_all= i.as_dict()
+        authors = await session.execute(select(User).where(User.id == i.author))
+        executors = await session.execute(select(User).where(User.id == i.executor))
+        author:User = authors.scalar()
+        executor:User = executors.scalar()
+
+        dict_all.pop("author")
+        dict_all.pop("executor")
+
+        dict_all["author"] = jsonable_encoder(author)
+        dict_all["executor"] =jsonable_encoder(executor)
+        data.append(dict_all)
+    return data
 
 
     

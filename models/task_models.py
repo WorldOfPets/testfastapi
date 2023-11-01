@@ -45,8 +45,8 @@ class TaskRead(BaseModel):
     name: str
     description: str
     createdAt: datetime
-    author: int
-    executor: int
+    author: UserRead
+    executor: Optional[UserRead]
     deadline: datetime
     difficulty_level: float
     is_completed: bool
