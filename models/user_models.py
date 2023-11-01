@@ -25,6 +25,10 @@ class User(SQLAlchemyBaseUserTable[int], Base):
     is_superuser: bool = Column(Boolean, default=False, nullable=False)
     is_verified: bool = Column(Boolean, default=False, nullable=False)
 
+    def as_dict(self):
+       return {c.name: getattr(self, c.name) for c in self.__table__.columns}
+
+
 # user = Table(
 #     "user",
 #     metadata, 

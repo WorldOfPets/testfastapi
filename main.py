@@ -22,17 +22,20 @@ class AdminAuth(AuthenticationBackend):
     async def login(self, request: Request) -> bool:
         form = await request.form()
         username, password = form["username"], form["password"]
-        print(passwordHelper.hash(password))
+        
         async with async_session_maker() as session:
             session:AsyncSession = session
-            query = select(User).where(User.username == username)
+            query = select(User.hashed_password).where(User.username == username)
             result = await session.execute(query)
         #result = session.execute(query)
         user = result.first()
         if user is not None:
-            print(user.hashed_password)
-            request.session.update({"token":str(secrets.token_urlsafe(16))})
-            return True
+            res = passwordHelper.verify_and_update(password, user[0])
+            if res[0]:
+                request.session.update({"token":str(secrets.token_urlsafe(16))})
+                return True
+            else:
+                return False
         else:
             return False
     
