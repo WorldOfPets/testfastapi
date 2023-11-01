@@ -27,6 +27,15 @@ class CreateTestData:
     def create_user(self, user_count: int = 3):
         callback_url = address + "/auth/auth/register"
         try:
+            result = httpx.post(callback_url, json={
+                "email": "admin@admin.ru",
+                "password": "admin",
+                "is_active": True,
+                "is_superuser": True,
+                "is_verified": True,
+                "username": "admin",
+                "role_id": 1
+                })
             for _ in range(user_count):
                 result = httpx.post(callback_url, json={
                 "email": faker.email(),

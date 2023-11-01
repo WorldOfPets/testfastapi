@@ -1,10 +1,11 @@
 from fastapi import FastAPI, Depends, Request
-from auth import get_async_session, engine, User
+from auth import get_async_session, engine, User, async_session_maker
 from models import Task
 from exec import CustomExec
 from fastapi.responses import RedirectResponse
 from routers import auth_router, utils_router, role_router, task_router
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy import select
 from redis import asyncio as aioredis
 from fastapi_cache import FastAPICache
 from fastapi_cache.backends.redis import RedisBackend
@@ -12,15 +13,28 @@ from fastapi_cache.decorator import cache
 from fastapi.middleware.cors import CORSMiddleware
 from sqladmin import Admin, ModelView
 from sqladmin.authentication import AuthenticationBackend
+from fastapi_users.password import PasswordHelper
+passwordHelper = PasswordHelper()
 import secrets
+
 
 class AdminAuth(AuthenticationBackend):
     async def login(self, request: Request) -> bool:
         form = await request.form()
         username, password = form["username"], form["password"]
-        print(username)
-        request.session.update({"token":str(secrets.token_urlsafe(16))})
-        return True
+        print(passwordHelper.hash(password))
+        async with async_session_maker() as session:
+            session:AsyncSession = session
+            query = select(User).where(User.username == username)
+            result = await session.execute(query)
+        #result = session.execute(query)
+        user = result.first()
+        if user is not None:
+            print(user.hashed_password)
+            request.session.update({"token":str(secrets.token_urlsafe(16))})
+            return True
+        else:
+            return False
     
     async def logout(self, request: Request) -> bool:
         request.session.clear()
