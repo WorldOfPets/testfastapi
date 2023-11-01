@@ -2,8 +2,8 @@
 
 ### For install and run
 1. Install
-   - ```install_win.bat``` (for Windows)
-   - ```bash install_win.sh``` (for Linux)
+   - ```install.bat``` (for Windows)
+   - ```bash install.sh``` (for Linux)
 2. Run
    - ```run.bat``` (for Windows)
    - ```bash run.sh``` (for Linux)
