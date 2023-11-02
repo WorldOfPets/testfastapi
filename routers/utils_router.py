@@ -37,7 +37,8 @@ def unprotected_route():
 @utils_router.post("/upload/")
 async def create_upload_file(file: UploadFile = File(...)):
     
-    file.filename = f"{uuid.uuid4()}.jpg"
+    f_name, f_extension = os.path.splitext(file.filename)
+    file.filename = f"{f_name}{uuid.uuid4()}{f_extension}"
     contents = await file.read()
 
     
