@@ -24,5 +24,5 @@ async def test_get_specific_operations(ac: AsyncClient):
     })
 
     assert response.status_code == 200
-    #assert response.json()["is_completed"] == False
-    #assert len(response.json()["data"]) == 1
+    assert response.json()[0]["is_completed"] == False
+    #assert len(response.json()[0]["author"]) == 1
