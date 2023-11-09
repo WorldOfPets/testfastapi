@@ -18,3 +18,7 @@ def get_base_page(request: Request):
 def get_search_page(request: Request, tasks=Depends(get_all_tasks)):
     print(tasks)
     return templates.TemplateResponse("search.html", {"request": request, "tasks": tasks})
+
+@page_router.get("/chat")
+def get_chat_page(request: Request):
+    return templates.TemplateResponse("chat.html", {"request": request})
