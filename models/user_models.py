@@ -1,7 +1,7 @@
 from datetime import datetime
 from sqlalchemy import Boolean, Table, Column, Integer, String, TIMESTAMP, ForeignKey
 from fastapi_users.db import SQLAlchemyBaseUserTable
-from .metadata import metadata, Base
+from .metadata import Base
 from .role_models import Role, RoleRead
 from typing import Optional
 from fastapi_users import schemas

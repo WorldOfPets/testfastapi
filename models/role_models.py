@@ -1,7 +1,7 @@
 from datetime import datetime
 from sqlalchemy import JSON, Boolean, MetaData, Table, Column, Integer, String, TIMESTAMP, ForeignKey
 from pydantic import BaseModel, Field
-from .metadata import metadata, Base
+from .metadata import Base
 from typing import  Optional
 from uuid import uuid1
 

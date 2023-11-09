@@ -4,7 +4,7 @@ from uuid import uuid1
 from sqlalchemy import JSON, Boolean, MetaData, Table, Column, Integer, String, TIMESTAMP, ForeignKey, Float
 from sqlalchemy.orm import relationship
 from pydantic import BaseModel, Field, ConfigDict
-from .metadata import metadata, Base
+from .metadata import  Base
 from .user_models import User, UserReadBaseModel, UserRead
 from pydantic.version import VERSION as PYDANTIC_VERSION
 
