@@ -1,5 +1,6 @@
 from datetime import datetime
 from sqlalchemy import Boolean, Table, Column, Integer, String, TIMESTAMP, ForeignKey
+from sqlalchemy.orm import relationship
 from fastapi_users.db import SQLAlchemyBaseUserTable
 from .metadata import Base
 from .role_models import Role, RoleRead
@@ -7,7 +8,6 @@ from typing import Optional
 from fastapi_users import schemas
 from pydantic import BaseModel, EmailStr, ConfigDict, Field
 from pydantic.version import VERSION as PYDANTIC_VERSION
-
 PYDANTIC_V2 = PYDANTIC_VERSION.startswith("2.")
 
 
@@ -24,6 +24,9 @@ class User(SQLAlchemyBaseUserTable[int], Base):
     is_active: bool = Column(Boolean, default=True, nullable=False)
     is_superuser: bool = Column(Boolean, default=False, nullable=False)
     is_verified: bool = Column(Boolean, default=False, nullable=False)
+
+    
+    groups = relationship("Group", back_populates="users")
 
     def as_dict(self):
        return {c.name: getattr(self, c.name) for c in self.__table__.columns}
