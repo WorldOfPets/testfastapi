@@ -3,7 +3,7 @@ from auth import get_async_session, engine, User, async_session_maker
 from models import Task
 from exec import CustomExec
 from fastapi.responses import RedirectResponse
-from routers import auth_router, utils_router, role_router, task_router, page_router, message_router, group_router
+from routers import auth_router, utils_router, role_router, task_router, page_router, message_router, group_router, book_author_router
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 from redis import asyncio as aioredis
@@ -89,6 +89,7 @@ app.include_router(task_router)
 app.include_router(page_router)
 app.include_router(message_router)
 app.include_router(group_router)
+app.include_router(book_author_router)
 #add path for static
 app.mount("/images", StaticFiles(directory="images"), name="images")
 

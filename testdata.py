@@ -1,8 +1,30 @@
 from datetime import datetime, timedelta
 from faker import Faker
+from sqlalchemy import create_engine
+from sqlalchemy.ext.asyncio import AsyncSession
+from models import Book, Author
+from auth.database import engine
 import random
 
 import httpx
+# Insert data
+from sqlalchemy.orm import Session
+engine = create_engine("sqlite+pysqlite:///auth/db.sqlite3", future=True, echo=True,
+                       connect_args={"check_same_thread": False})
+with Session(bind=engine) as session:
+    book1 = Book(title="Dead People Who'd Be Influencers Today")
+    book2 = Book(title="How To Make Friends In Your 30s")
+    
+    author1 = Author(name="Blu Renolds")
+    author2 = Author(name="Chip Egan")
+    author3 = Author(name="Alyssa Wyatt")
+    
+    book1.authors = [author1, author2]
+    book2.authors = [author1, author3]
+    
+    session.add_all([book1, book2, author1, author2, author3])
+    session.commit()
+
 
 faker = Faker("ru_RU")
 address = "http://127.0.0.1:8000"
@@ -70,9 +92,9 @@ class CreateTestData:
 
 try:
     testdata = CreateTestData()
-    testdata.create_role()
-    testdata.create_user()
-    testdata.create_task()
+    # testdata.create_role()
+    # testdata.create_user()
+    # testdata.create_task()
 except Exception as ex:
     print(ex)
 
